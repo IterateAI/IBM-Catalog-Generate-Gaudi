@@ -1,17 +1,3 @@
-# PersistentVolume for MySQL
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: "{{ .Release.Name }}-mysql-pv"
-# spec:
-#   capacity:
-#     storage: 5Gi
-#   accessModes:
-#     - ReadWriteOnce
-#   hostPath:
-#     path: "/data/{{ .Values.storage.dataFolder }}/mysql"
-#     type: DirectoryOrCreate
-# ---
 # PersistentVolumeClaim for MySQL
 apiVersion: v1
 kind: PersistentVolumeClaim

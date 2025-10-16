@@ -22,20 +22,6 @@ data:
     common:
       storageType: local
 ---
-# PersistentVolume for Milvus
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: "{{ .Release.Name }}-milvus-pv"
-# spec:
-#   capacity:
-#     storage: 5Gi
-#   accessModes:
-#     - ReadWriteOnce
-#   hostPath:
-#     path: "/data/{{ .Values.storage.dataFolder }}/milvus"
-#     type: DirectoryOrCreate
-# ---
 # PersistentVolumeClaim for Milvus
 apiVersion: v1
 kind: PersistentVolumeClaim

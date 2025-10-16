@@ -22,9 +22,9 @@ spec:
       - name: "{{ .Release.Name }}-generate-enterprise-container"
         image: "{{ .Values.generateenterprise.image }}:{{ .Values.generateenterprise.tag }}"
         resources:
-          requests:
-            cpu: "1"        
-            memory: "6Gi"    
+          # requests:
+          #   cpu: "1"        
+          #   memory: "6Gi"    
           limits:
             cpu: "2"           
             memory: "8Gi"   

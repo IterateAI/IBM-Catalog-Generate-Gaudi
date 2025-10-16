@@ -1,17 +1,3 @@
-# PersistentVolume for Redis
-# apiVersion: v1
-# kind: PersistentVolume
-# metadata:
-#   name: "{{ .Release.Name }}-redis-pv"
-# spec:
-#   capacity:
-#     storage: 1Gi
-#   accessModes:
-#     - ReadWriteOnce
-#   hostPath:
-#     path: "/data/{{ .Values.storage.dataFolder }}/redis"
-#     type: DirectoryOrCreate
-# ---
 # PersistentVolumeClaim for Redis
 apiVersion: v1
 kind: PersistentVolumeClaim

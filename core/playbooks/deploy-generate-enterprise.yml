@@ -82,7 +82,7 @@
       run_once: true
     # - name: Install Generate Enterprise
     #   command: >
-    #     helm upgrade --install genai-gateway {{ remote_helm_charts_base }}/generate-enterprise
+    #     helm upgrade --install ge1 {{ remote_helm_charts_base }}/generate-enterprise
     #     --namespace generate-enterprise
     #     --create-namespace
     #     --set generateenterprise.host={{ generate_enterprise_host }}
@@ -91,7 +91,7 @@
     #   run_once: true
     - name: Install Generate Enterprise
       command: >
-        helm upgrade --install genai-gateway {{ remote_helm_charts_base }}/generate-enterprise
+        helm upgrade --install ge1 {{ remote_helm_charts_base }}/generate-enterprise
         --namespace generate-enterprise
         --create-namespace
         -f {{ remote_helm_charts_base }}/generate-enterprise/values.yaml

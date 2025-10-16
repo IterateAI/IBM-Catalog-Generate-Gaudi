@@ -6,14 +6,19 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "100g"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
+  ingressClassName: nginx
   rules:
-  - host: {{ .Values.generateenterprise.host }}
+  - host: {{ .Values.ingress.host }}
     http:
       paths:
       - path: /generate(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: "{{ .Release.Name }}-generate-enterprise-service"
             port:
               number: {{ .Values.generateenterprise.port }}
+  tls:
+  - hosts:
+    - {{ .Values.ingress.host }}
+    secretName: {{ .Values.ingress.secretname }}
