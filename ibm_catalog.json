@@ -134,16 +134,8 @@
                             "required": true,
 							"options": [
 							  {
-								"displayname": "meta-llama/Llama-3.1-8B-Instruct (1 card,disk-20GB)",
-								"value": "1"
-							  },
-							  {
-								"displayname": "meta-llama/Llama-3.3-70B-Instruct(4 card ,disk-150GB)",
-								"value": "12"
-							  },
-							  {
-								"displayname": "meta-llama/Llama-3.1-405B-Instruct(8 card ,disk-900GB)",
-								"value": "11"
+								"displayname": "Qwen/Qwen2.5-72B-Instruct (4 card ,disk-150GB)",
+								"value": "334"
 							  }
 							]
                         },
@@ -458,16 +450,8 @@
                             "required": true,
 							"options": [
 							  {
-								"displayname": "meta-llama/Llama-3.1-8B-Instruct (1 card,disk-20GB)",
-								"value": "1"
-							  },
-							  {
-								"displayname": "meta-llama/Llama-3.3-70B-Instruct(4 card ,disk-150GB)",
-								"value": "12"
-							  },
-							  {
-								"displayname": "meta-llama/Llama-3.1-405B-Instruct(8 card ,disk-900GB)",
-								"value": "11"
+								"displayname": "Qwen/Qwen2.5-7B-Instruct (1 card,disk-20GB)",
+								"value": "333"
 							  }
 							]
                         },

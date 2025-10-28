@@ -1484,6 +1484,20 @@ get_model_names() {
     read -ra model_array <<< "$models"
     for model in "${model_array[@]}"; do
         case "$model" in
+            333)
+                if [ "$cpu_or_gpu" = "c" ]; then
+                    echo "Error: GPU model identifier provided for CPU deployment/removal." >&2
+                    exit 1
+                fi
+                model_names+=("qwen-7b")
+                ;;
+            334)
+                if [ "$cpu_or_gpu" = "c" ]; then
+                    echo "Error: GPU model identifier provided for CPU deployment/removal." >&2
+                    exit 1
+                fi
+                model_names+=("qwen-72b")
+                ;;
             1)
                 if [ "$cpu_or_gpu" = "c" ]; then
                     echo "Error: GPU model identifier provided for CPU deployment/removal." >&2

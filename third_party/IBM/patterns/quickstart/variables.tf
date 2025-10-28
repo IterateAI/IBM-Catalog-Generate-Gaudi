@@ -138,7 +138,7 @@ variable "generate_enterprise_docker_password" {
 variable "models" {
   description = "Model number to be deployed"
   type        = string
-  default     = "1"
+  default     = "334"
 }
 variable "vault_pass_code" {
   description = "Vault Pass code for Encryption/Decryption"

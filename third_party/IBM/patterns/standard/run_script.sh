@@ -76,15 +76,12 @@ if [[ "$1" == "model-deploy" ]]; then
   
   echo "[$(date)] Starting scaling logic for model $2..."
  # scaling logic
-  if [[ "$2" == "1" ]]; then
-    kubectl scale deployment vllm-llama-8b --replicas=8
-    echo "[$(date)] Scaled vllm-llama-8b to 8 replicas"
-  elif [[ "$2" == "12" ]]; then
-    kubectl scale deployment vllm-llama-3-3-70b --replicas=2
-    echo "[$(date)] Scaled vllm-llama-3-3-70b to 2 replicas"
-  elif [[ "$2" == "11" ]]; then
-    kubectl scale deployment vllm-llama3-405b --replicas=1
-    echo "[$(date)] Scaled vllm-llama3-405b to 1 replica"
+  if [[ "$2" == "333" ]]; then
+    kubectl scale deployment vllm-qwen-7b --replicas=2
+    echo "[$(date)] Scaled vllm-qwen-7b to 2 replicas"
+  elif [[ "$2" == "334" ]]; then
+    kubectl scale deployment vllm-qwen-72b --replicas=2
+    echo "[$(date)] Scaled vllm-qwen-72b to 2 replicas"
   else
     echo "Unsupported model selected: $2"
   fi

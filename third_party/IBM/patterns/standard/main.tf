@@ -300,10 +300,8 @@ output "model_endpoint" {
 }
 output "model_id" {
   description = "Model ID based on the models number from terraform.tfvars"
-  value = var.models == "1" ? "meta-llama/Llama-3.1-8B-Instruct" : (
-    var.models == "11" ? "meta-llama/Llama-3.1-405B-Instruct" : (
-      var.models == "12" ? "meta-llama/Llama-3.3-70B-Instruct" : "Unknown model"
-    )
+  value = var.models == "333" ? "Qwen/Qwen2.5-7B-Instruct" : (
+    var.models == "334" ? "Qwen/Qwen2.5-72B-Instruct" : "Unknown model"
   )
 }
 output "genAI_gateway_url" {

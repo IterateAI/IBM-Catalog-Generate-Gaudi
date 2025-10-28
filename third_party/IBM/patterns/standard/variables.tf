@@ -99,7 +99,7 @@ variable "generate_enterprise_docker_password" {
 variable "models" {
   description = "Model number to be deployed"
   type        = string
-  default     = "1"
+  default     = "334"
 }
 variable "cpu_or_gpu" {
   description = "This variable specifies where the model should be running"

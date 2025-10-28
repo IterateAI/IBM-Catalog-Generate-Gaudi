@@ -58,7 +58,7 @@ modelConfigs:
       VLLM_PROMPT_USE_FUSEDSDPA: 1
       VLLM_SKIP_WARMUP: false
       PT_HPU_RECIPE_CACHE_CONFIG: "/data/recipe_cache,false,1024"
-    extraCmdArgs: ["--block-size","128","--dtype","bfloat16","--max-model-len","32512","--gpu-memory-util","0.98","--max-num-seqs","64","--max-num-prefill-seqs","16","--num_scheduler_steps","1","--use-padding-aware-scheduling", "--disable-log-requests"]
+    extraCmdArgs: ["--enable-auto-tool-choice", "--block-size","128","--dtype","bfloat16","--max-model-len","32512","--gpu-memory-util","0.98","--max-num-seqs","64","--max-num-prefill-seqs","16","--num_scheduler_steps","1","--use-padding-aware-scheduling", "--disable-log-requests"]
     tensor_parallel_size: "1"
 
   # Qwen/Qwen2.5-14B-Instruct
@@ -125,7 +125,7 @@ modelConfigs:
       VLLM_PROMPT_USE_FUSEDSDPA: 1
       VLLM_SKIP_WARMUP: false
       PT_HPU_RECIPE_CACHE_CONFIG: "/data/recipe_cache,false,1024"
-    extraCmdArgs: ["--block-size","128","--dtype","bfloat16","--max-model-len","33024","--gpu-memory-util","0.98","--max-num-seqs","32","--max-num-prefill-seqs","16","--num_scheduler_steps","1","--use-padding-aware-scheduling", "--disable-log-requests"]
+    extraCmdArgs: ["--enable-auto-tool-choice", "--block-size","128","--dtype","bfloat16","--max-model-len","33024","--gpu-memory-util","0.98","--max-num-seqs","32","--max-num-prefill-seqs","16","--num_scheduler_steps","1","--use-padding-aware-scheduling", "--disable-log-requests"]
     tensor_parallel_size: "4"
 
   # meta-llama/Llama-3.1-8B-Instruct

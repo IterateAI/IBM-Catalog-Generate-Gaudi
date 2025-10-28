@@ -483,6 +483,172 @@
         - uninstall_true == 'true'
         - helm_release_installed.stdout != ""
 
+    - name: Deploy Qwen7b LLM Model
+      block:
+        - name: Delete Ingress resource Qwen7b from default namespace
+          kubernetes.core.k8s:
+            kind: Ingress
+            namespace: default
+            name: vllm-qwen-7b-ingress
+            state: absent
+          tags: install-qwen-7b
+        - name: Delete Ingress resource Qwen7b from auth-apisix namespace
+          kubernetes.core.k8s:
+            kind: Ingress
+            namespace: auth-apisix
+            name: vllm-qwen-7b-ingress
+            state: absent
+          tags: install-qwen-7b
+        - name: Deploy LLM model Qwen7b
+          ansible.builtin.command: >-
+            helm upgrade --install vllm-qwen-7b "{{ remote_helm_charts_base }}/vllm"
+            --set LLM_MODEL_ID="Qwen/Qwen2.5-7B-Instruct"
+            --set global.monitoring="{{ vllm_metrics_enabled }}"
+            --set svcmonitor.enabled="{{ vllm_metrics_enabled }}"
+            --set global.HUGGINGFACEHUB_API_TOKEN={{ hugging_face_token }}
+            {% if apisix_enabled %}
+              --set apisix.enabled={{ apisix_enabled }}
+            {% endif %}
+            {% if gaudi_deployment %}
+              --set tensor_parallel_size={{ tensor_parallel_size_vllm }}
+              --values {{ gaudi_values_file }}
+            {% endif %}
+            {% if ingress_enabled %}
+              --set ingress.enabled={{ ingress_enabled }}
+              --set ingress.host={{ secret_name }}
+              --set ingress.secretname={{ secret_name }}
+            {% endif %}
+            {% if deploy_keycloak == 'yes' and apisix_enabled %}
+              --set oidc.client_id={{ keycloak_client_id | default('') }}
+              --set oidc.client_secret={{ client_secret | default('') }}
+            {% endif %}
+            {{ helm_proxy_args | default('') }}
+            --force
+          register: helm_upgrade_install_model_deployment
+          failed_when: helm_upgrade_install_model_deployment.rc != 0
+          tags: install-qwen-7b
+        - name: Register Qwen7b model
+          import_tasks: register-model-genai-gateway.yml
+          vars:
+            reg_model_name: "Qwen/Qwen2.5-7B-Instruct"
+            reg_litellm_model: "openai/Qwen/Qwen2.5-7B-Instruct"
+            reg_custom_llm_provider: "openai"
+            reg_api_base: "http://vllm-qwen-7b-service/v1"
+            reg_input_cost_per_token: 0.001
+            reg_output_cost_per_token: 0.002
+          tags:
+            - install-qwen-7b
+            - install-genai-gateway
+          run_once: true
+          when:
+            - "'install-qwen-7b' in ansible_run_tags"
+            - "'install-genai-gateway' in ansible_run_tags"
+      run_once: true
+      when:
+        - model_name_list is defined
+        - "'qwen-7b' in (model_name_list | regex_replace(',', ' ') | split())"
+        - install_true == 'true'
+
+    - name: Check if vllm-qwen-7b Model is deployed
+      ansible.builtin.command:
+        cmd: "helm list --filter vllm-qwen-7b --short"
+      register: helm_release_installed
+      ignore_errors: true
+      run_once: true
+      tags: uninstall-qwen-7b
+    - name: Uninstall vllm-qwen-7b Model
+      ansible.builtin.command:
+        cmd: "helm uninstall vllm-qwen-7b"
+      run_once: true
+      tags: uninstall-qwen-7b
+      when:
+        - "'qwen-7b' in (model_name_list | regex_replace(',', ' ') | split())"
+        - uninstall_true == 'true'
+        - helm_release_installed.stdout != ""
+
+    - name: Deploy Qwen72b LLM Model
+      block:
+        - name: Delete Ingress resource Qwen72b from default namespace
+          kubernetes.core.k8s:
+            kind: Ingress
+            namespace: default
+            name: vllm-qwen-72b-ingress
+            state: absent
+          tags: install-qwen-72b
+        - name: Delete Ingress resource Qwen72b from auth-apisix namespace
+          kubernetes.core.k8s:
+            kind: Ingress
+            namespace: auth-apisix
+            name: vllm-qwen-72b-ingress
+            state: absent
+          tags: install-qwen-72b
+        - name: Deploy LLM model Qwen72b
+          ansible.builtin.command: >-
+            helm upgrade --install vllm-qwen-72b "{{ remote_helm_charts_base }}/vllm"
+            --set LLM_MODEL_ID="Qwen/Qwen2.5-72B-Instruct"
+            --set global.monitoring="{{ vllm_metrics_enabled }}"
+            --set svcmonitor.enabled="{{ vllm_metrics_enabled }}"
+            --set global.HUGGINGFACEHUB_API_TOKEN={{ hugging_face_token }}
+            {% if apisix_enabled %}
+              --set apisix.enabled={{ apisix_enabled }}
+            {% endif %}
+            {% if gaudi_deployment %}
+              --set tensor_parallel_size={{ tensor_parallel_size_vllm }}
+              --values {{ gaudi_values_file }}
+            {% endif %}
+            {% if ingress_enabled %}
+              --set ingress.enabled={{ ingress_enabled }}
+              --set ingress.host={{ secret_name }}
+              --set ingress.secretname={{ secret_name }}
+            {% endif %}
+            {% if deploy_keycloak == 'yes' and apisix_enabled %}
+              --set oidc.client_id={{ keycloak_client_id | default('') }}
+              --set oidc.client_secret={{ client_secret | default('') }}
+            {% endif %}
+            {{ helm_proxy_args | default('') }}
+            --force
+          register: helm_upgrade_install_model_deployment
+          failed_when: helm_upgrade_install_model_deployment.rc != 0
+          tags: install-qwen-72b
+        - name: Register Qwen72b model
+          import_tasks: register-model-genai-gateway.yml
+          vars:
+            reg_model_name: "Qwen/Qwen2.5-72B-Instruct"
+            reg_litellm_model: "openai/Qwen/Qwen2.5-72B-Instruct"
+            reg_custom_llm_provider: "openai"
+            reg_api_base: "http://vllm-qwen-72b-service/v1"
+            reg_input_cost_per_token: 0.001
+            reg_output_cost_per_token: 0.002
+          tags:
+            - install-qwen-72b
+            - install-genai-gateway
+          run_once: true
+          when:
+            - "'install-qwen-72b' in ansible_run_tags"
+            - "'install-genai-gateway' in ansible_run_tags"
+      run_once: true
+      when:
+        - model_name_list is defined
+        - "'qwen-72b' in (model_name_list | regex_replace(',', ' ') | split())"
+        - install_true == 'true'
+
+    - name: Check if vllm-qwen-72b Model is deployed
+      ansible.builtin.command:
+        cmd: "helm list --filter vllm-qwen-72b --short"
+      register: helm_release_installed
+      ignore_errors: true
+      run_once: true
+      tags: uninstall-qwen-72b
+    - name: Uninstall vllm-qwen-72b Model
+      ansible.builtin.command:
+        cmd: "helm uninstall vllm-qwen-72b"
+      run_once: true
+      tags: uninstall-qwen-72b
+      when:
+        - "'qwen-72b' in (model_name_list | regex_replace(',', ' ') | split())"
+        - uninstall_true == 'true'
+        - helm_release_installed.stdout != ""
+
     - name: Deploy "{{ huggingface_model_id }}" LLM Model
       block:
         - name: Delete Ingress resource "{{ huggingface_model_id }}" from default namespace
