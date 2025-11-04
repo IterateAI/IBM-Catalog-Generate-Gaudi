@@ -131,7 +131,7 @@
 			            {
                             "key": "models",
                             "type": "string",
-                            "default_value": "",
+                            "default_value": "333",
                             "description": "Choose the pre-tested model from the dropdown to deploy.",
                             "required": true,
 							"options": [
@@ -150,7 +150,7 @@
                         },
                         {
                             "key": "generate_enterprise_docker_user",
-                            "type": "string",
+                            "type": "multiline_secure_value",
                             "description": "This variable specifies the Generate Enterprise docker registry username. ",
                             "required": true,
                             "hidden": true
