@@ -58,16 +58,16 @@
             namespace: generate-enterprise
           type: kubernetes.io/dockerconfigjson
           stringData:
-            .dockerconfigjson: |
+            .dockerconfigjson: >
               {
                 "auths": {
                   "https://index.docker.io/v1/": {
                     "username": "{{ generate_enterprise_docker_user }}",
-                    "password": "{{ generate_enterprise_docker_password }}"
+                    "password": "{{ generate_enterprise_docker_password }}",
+                    "auth": "{{ (generate_enterprise_docker_user ~ ':' ~ generate_enterprise_docker_password) | b64encode }}"
                   }
                 }
               }
-      register: kubectl_output
       run_once: true
     - name: Image Pull Secret Create
       debug:
