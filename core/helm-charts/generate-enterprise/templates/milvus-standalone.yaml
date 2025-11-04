@@ -53,13 +53,13 @@ spec:
       containers:
         - name: "{{ .Release.Name }}-milvus-standalone"
           image: "{{ .Values.milvus.image }}:{{ .Values.milvus.tag }}"
-          resources:
+          # resources:
             # requests:
             #   cpu: "500m"
             #   memory: "500Mi"
-            limits:
-              cpu: "1"
-              memory: "1Gi"
+            # limits:
+            #   cpu: "1"
+            #   memory: "1Gi"
           args: ["milvus", "run", "standalone"]
           env:
             - name: ETCD_USE_EMBED

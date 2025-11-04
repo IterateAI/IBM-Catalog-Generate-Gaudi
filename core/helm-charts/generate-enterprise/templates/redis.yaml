@@ -29,13 +29,13 @@ spec:
       containers:
         - name: "{{ .Release.Name }}-redis"
           image: "{{ .Values.redis.image }}:{{ .Values.redis.tag }}"
-          resources:
+          # resources:
             # requests:
             #   cpu: "100m"
             #   memory: "128Mi"
-            limits:
-              cpu: "250m"
-              memory: "256Mi"
+            # limits:
+            #   cpu: "250m"
+            #   memory: "256Mi"
           ports:
             - containerPort: 6379
           args: ["--appendonly", "yes"]  # Enable AOF persistence
