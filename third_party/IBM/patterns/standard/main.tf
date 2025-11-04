@@ -336,7 +336,7 @@ data "template_file" "inference_config" {
     cluster_url                         = var.cluster_url
     cert_file                           = var.cert_path
     key_file                            = var.key_path
-    hugging_face_token                  = var.hugging_face_token\
+    hugging_face_token                  = var.hugging_face_token
     generate_enterprise_docker_user      = var.generate_enterprise_docker_user
     generate_enterprise_docker_password  = var.generate_enterprise_docker_password
     cpu_or_gpu                          = var.cpu_or_gpu

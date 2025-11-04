@@ -67,6 +67,7 @@ if [[ "$1" == "install-habana-runtime" ]]; then
   exit 0
 fi
 
+
 # Model deploy code
 if [[ "$1" == "model-deploy" ]]; then
   echo "[$(date)] Phase 2: Deploying models with PVC support"
