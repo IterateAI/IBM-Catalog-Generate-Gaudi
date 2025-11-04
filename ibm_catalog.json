@@ -131,13 +131,13 @@
 			            {
                             "key": "models",
                             "type": "string",
-                            "default_value": "333",
+                            "default_value": "334",
                             "description": "Choose the pre-tested model from the dropdown to deploy.",
                             "required": true,
 							"options": [
 							  {
-								"displayname": "Qwen/Qwen2.5-7B-Instruct (1 card,disk-20GB)",
-								"value": "333"
+								"displayname": "Qwen/Qwen2.5-72B-Instruct (4 cards,disk-200GB)",
+								"value": "334"
 							  }
 							]
                         },
