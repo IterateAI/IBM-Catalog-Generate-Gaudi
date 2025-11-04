@@ -153,14 +153,16 @@
                             "type": "string",
                             "default_value": "__NULL__",
                             "description": "This variable specifies the Generate Enterprise docker registry username. ",
-                            "required": true
+                            "required": true,
+                            "hidden": true
                         },
                         {
                             "key": "generate_enterprise_docker_password",
                             "type": "multiline_secure_value",
                             "default_value": "__NULL__",
                             "description": "This variable specifies the Generate Enterprise docker registry password. ",
-                            "required": true
+                            "required": true,
+                            "hidden": true
                         },
 			            {
                             "key": "resource_group",
