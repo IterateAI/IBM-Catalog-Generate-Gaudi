@@ -1,0 +1,2 @@
+- name: Setup Generate Enterprise
+  ansible.builtin.import_playbook: playbooks/deploy-generate-enterprise.yml

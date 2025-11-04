@@ -956,7 +956,7 @@ deploy_generate_enterprise_playbook() {
         generate_enterprise_storage_accessmode="ReadWriteOnce"        
     fi
 
-    ansible-playbook -i "${INVENTORY_PATH}" playbooks/deploy-generate_enterprise.yml \
+    ansible-playbook -i "${INVENTORY_PATH}" playbooks/deploy-generate-enterprise.yml \
         --extra-vars "ingress_host=${cluster_url} cert_file=${cert_file} key_file=${key_file} storage_access_mode=${generate_enterprise_storage_accessmode} generate_enterprise_docker_user=${generate_enterprise_docker_user} generate_enterprise_docker_password=${generate_enterprise_docker_password} "
 }
 
