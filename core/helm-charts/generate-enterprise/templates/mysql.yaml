@@ -46,13 +46,13 @@ spec:
       containers:
         - name: "{{ .Release.Name }}-mysql"
           image: "{{ .Values.mysql.image }}:{{ .Values.mysql.tag }}"
-          resources:
+          # resources:
             # requests:
             #   cpu: "500m"
             #   memory: "512Mi"
-            limits:
-              cpu: "1"
-              memory: "1Gi"
+            # limits:
+            #   cpu: "1"
+            #   memory: "1Gi"
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.mysql.targetPort }}

@@ -21,13 +21,13 @@ spec:
       containers:
       - name: "{{ .Release.Name }}-generate-enterprise-container"
         image: "{{ .Values.generateenterprise.image }}:{{ .Values.generateenterprise.tag }}"
-        resources:
+        # resources:
           # requests:
           #   cpu: "1"        
           #   memory: "6Gi"    
-          limits:
-            cpu: "2"           
-            memory: "8Gi"   
+          # limits:
+          #   cpu: "2"           
+          #   memory: "8Gi"   
         env:
           - name: REDIS_URL
             value: "{{ .Release.Name }}-redis:6379"
