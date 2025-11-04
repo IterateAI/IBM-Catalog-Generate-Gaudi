@@ -47,6 +47,20 @@
       debug:
         msg: "Secret generate-tls-secret created."
       run_once: true
+    - name: Create dockerconfigjson data inline for Generate Enterprise
+      set_fact:
+        dockerconfigjson: >-
+          {{
+            {
+              "auths": {
+                "https://index.docker.io/v1/": {
+                  "username": generate_enterprise_docker_user,
+                  "password": generate_enterprise_docker_password,
+                  "auth": (generate_enterprise_docker_user + ':' + generate_enterprise_docker_password) | b64encode
+                }
+              }
+            } | to_nice_json
+          }}
     - name: Create Image Pull Secret for Generate Enterprise
       community.kubernetes.k8s:
         state: present
@@ -57,17 +71,8 @@
             name: generate-reg-cred
             namespace: generate-enterprise
           type: kubernetes.io/dockerconfigjson
-          stringData:
-            .dockerconfigjson: >
-              {
-                "auths": {
-                  "https://index.docker.io/v1/": {
-                    "username": "{{ generate_enterprise_docker_user }}",
-                    "password": "{{ generate_enterprise_docker_password }}",
-                    "auth": "{{ (generate_enterprise_docker_user ~ ':' ~ generate_enterprise_docker_password) | b64encode }}"
-                  }
-                }
-              }
+          data:
+            .dockerconfigjson: "{{ dockerconfigjson | b64encode }}"
       run_once: true
     - name: Image Pull Secret Create
       debug:
