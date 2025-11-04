@@ -1,21 +1,23 @@
 {
     "products": [
         {
-            "label": "Intel® AI for Enterprise Inference",
+            "label": "Intel® AI for Enterprise Inference with Generate Enterprise",
             "name": "da-enterprise-inference",
-            "version": "1.2.0",
+            "version": "3.3.4",
             "product_kind": "solution",
 			"tags": [
               "opea",
               "intel_gaudi",
-              "enterprise-inference"
+              "enterprise-inference",
+              "generate-enterprise"
             ],
 		    "keywords": [
               "opea",
               "intel_gaudi",
-              "enterprise-inference"
+              "enterprise-inference",
+              "generate-enterprise"
             ],
-	        "short_description": "Intel® AI for Enterprise Inference (Enterprise Inference) is aimed to streamline the deployment and management of inference services on Intel® hardware.",
+	        "short_description": "Intel® AI for Enterprise Inference (Enterprise Inference) with Generate Enterprise is aimed to streamline the deployment and management of inference services on Intel® hardware.",
 			"long_description": "This solution automates the provisioning of virtual machines on IBM Cloud using Terraform, optimized for AI workloads powered by Intel® Gaudi® 3 AI accelerators. It deploys a Kubernetes cluster that supports both single-node and multi-node configurations. The multi-node setup includes three control plane nodes for orchestration and cluster management, along with worker nodes equipped with Intel® Gaudi® 3 for high-performance AI inference.The deployment integrates the Intel® AI for Enterprise Inference framework from the Open Platform for Enterprise AI (OPEA), enabling scalable deployment of Large Language Models (LLMs) across various configurations. It also includes key enterprise-grade features such as GenAI Gateway for secure and scalable access to generative AI models, Token Telemetry for detailed tracking and analysis of token usage across inference workloads, and Observability for real-time monitoring of system performance, resource utilization, and model behavior.By combining cutting-edge AI infrastructure with cloud automation, this solution provides a streamlined and efficient approach to deploying and managing machine learning models at scale.\n\n**Prerequisites:**\n- Review the [Getting Started Guide](https://github.com/opea-project/Enterprise-Inference/blob/main/third_party/IBM/docs/getting-started.md) for deployment instructions\n- Consult the [Sizing Guide](https://github.com/opea-project/Enterprise-Inference/blob/main/third_party/IBM/docs/sizing-guide.md) to understand Intel® Gaudi® 3 AI Accelerator capabilities and choose the optimal configuration for your AI models",
             "features": [
 			  {
