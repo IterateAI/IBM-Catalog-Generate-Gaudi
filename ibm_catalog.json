@@ -128,26 +128,6 @@
                             "description": "Enter the domain name or url of the cluster",
                             "required": true
                         },
-			            {
-                            "key": "models",
-                            "type": "string",
-                            "default_value": "334",
-                            "description": "Choose the pre-tested model from the dropdown to deploy.",
-                            "required": true,
-							"options": [
-							  {
-								"displayname": "Qwen/Qwen2.5-72B-Instruct (4 cards,disk-200GB)",
-								"value": "334"
-							  }
-							]
-                        },
-                        {
-                            "key": "hugging_face_token",
-                            "type": "multiline_secure_value",
-                            "default_value": "__NULL__",
-                            "description": "This variable specifies the Hugging Face token. You can also create a token by referring to the documentation at https://huggingface.co/docs/hub/en/security-tokens. ",
-                            "required": true
-                        },
                         {
                             "key": "generate_enterprise_docker_user",
                             "type": "multiline_secure_value",
@@ -202,9 +182,9 @@
                         {
                             "key": "vault_pass_code",
                             "type": "multiline_secure_value",
-                            "default_value": "",
                             "description": "Enter the master vault pass code",
-							"required": true
+							"required": true,
+                            "hidden": true
                         }
 						
 		            ]
