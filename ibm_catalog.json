@@ -200,36 +200,6 @@
 							"required": true
                         },
                         {
-                            "key": "deployment_mode",
-                            "type": "string",
-                            "display_name": "Deployment Mode",
-                            "default_value": "single-node",
-                            "description": "Deployment mode for the infrastructure (single-node or multi-node)",
-                            "required": true,
-                            "options": [
-                                {
-                                    "displayname": "Single Node",
-                                    "value": "single-node"
-                                }
-                            ]
-                        },
-                        {
-                            "key": "control_plane_count",
-			                "type": "number",
-                            "display_name": "Control plane nodes count",
-                            "default_value": "3",
-			                "description": "Number of control plane nodes (1 for single or 3 for HA) - only used in multi-node mode",
-			                "required": true
-                        },
-                        {
-                            "key": "worker_gaudi_count",
-			                "type": "number",
-                            "display_name": "Worker nodes count",
-                            "default_value": "1",
-			                "description": "Number of Gaudi worker nodes for inference - only used in multi-node mode",
-			                "required": true
-                        },
-                        {
                             "key": "vault_pass_code",
                             "type": "multiline_secure_value",
                             "default_value": "",
