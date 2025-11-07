@@ -77,7 +77,7 @@ variable "user_key" {
 variable "image" {
   description = "IBM Cloud instance image"
   type        = string
-  default     = "gaudi3-os-u22-01-21-0"
+  default     = "gaudi3-intel-ibm"
 }
 variable "hugging_face_token" {
   description = "This variable specifies the hf token."
@@ -190,7 +190,7 @@ variable "xeon_image" {
 variable "gaudi_image" {
   description = "IBM Cloud instance image for Gaudi nodes in multi-node deployment"
   type        = string
-  default     = "gaudi3-os-u22-01-21-0"  # Default Gaudi image
+  default     = "gaudi3-intel-ibm"  # Default Gaudi image
 }
 
 variable "control_plane_names" {
