@@ -592,6 +592,7 @@
               --set apisix.enabled={{ apisix_enabled }}
             {% endif %}
             {% if gaudi_deployment %}
+              --set tensor_parallel_size=4
               --values {{ gaudi_values_file }}
             {% endif %}
             {% if ingress_enabled %}
