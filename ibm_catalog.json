@@ -128,26 +128,6 @@
                             "description": "Enter the domain name or url of the cluster",
                             "required": true
                         },
-			            {
-                            "key": "models",
-                            "type": "string",
-                            "default_value": "334",
-                            "description": "Choose the pre-tested model from the dropdown to deploy.",
-                            "required": true,
-							"options": [
-							  {
-								"displayname": "Qwen/Qwen2.5-72B-Instruct (4 cards,disk-200GB)",
-								"value": "334"
-							  }
-							]
-                        },
-                        {
-                            "key": "hugging_face_token",
-                            "type": "multiline_secure_value",
-                            "default_value": "__NULL__",
-                            "description": "This variable specifies the Hugging Face token. You can also create a token by referring to the documentation at https://huggingface.co/docs/hub/en/security-tokens. ",
-                            "required": true
-                        },
                         {
                             "key": "generate_enterprise_docker_user",
                             "type": "multiline_secure_value",
@@ -200,41 +180,11 @@
 							"required": true
                         },
                         {
-                            "key": "deployment_mode",
-                            "type": "string",
-                            "display_name": "Deployment Mode",
-                            "default_value": "single-node",
-                            "description": "Deployment mode for the infrastructure (single-node or multi-node)",
-                            "required": true,
-                            "options": [
-                                {
-                                    "displayname": "Single Node",
-                                    "value": "single-node"
-                                }
-                            ]
-                        },
-                        {
-                            "key": "control_plane_count",
-			                "type": "number",
-                            "display_name": "Control plane nodes count",
-                            "default_value": "3",
-			                "description": "Number of control plane nodes (1 for single or 3 for HA) - only used in multi-node mode",
-			                "required": true
-                        },
-                        {
-                            "key": "worker_gaudi_count",
-			                "type": "number",
-                            "display_name": "Worker nodes count",
-                            "default_value": "1",
-			                "description": "Number of Gaudi worker nodes for inference - only used in multi-node mode",
-			                "required": true
-                        },
-                        {
                             "key": "vault_pass_code",
                             "type": "multiline_secure_value",
-                            "default_value": "",
                             "description": "Enter the master vault pass code",
-							"required": true
+							"required": true,
+                            "hidden": true
                         }
 						
 		            ]
