@@ -89,6 +89,7 @@ variable "generate_enterprise_docker_user" {
   description = "This variable specifies the generate enterprise docker user."
   type        = string
   default     = ""
+  sensitive   = true
 }
 variable "generate_enterprise_docker_password" {
   description = "This variable specifies the generate enterprise docker password."

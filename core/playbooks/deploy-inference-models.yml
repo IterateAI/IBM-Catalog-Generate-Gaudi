@@ -510,7 +510,6 @@
               --set apisix.enabled={{ apisix_enabled }}
             {% endif %}
             {% if gaudi_deployment %}
-              --set tensor_parallel_size={{ tensor_parallel_size_vllm }}
               --values {{ gaudi_values_file }}
             {% endif %}
             {% if ingress_enabled %}
@@ -593,7 +592,6 @@
               --set apisix.enabled={{ apisix_enabled }}
             {% endif %}
             {% if gaudi_deployment %}
-              --set tensor_parallel_size={{ tensor_parallel_size_vllm }}
               --values {{ gaudi_values_file }}
             {% endif %}
             {% if ingress_enabled %}
