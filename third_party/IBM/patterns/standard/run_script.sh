@@ -53,43 +53,43 @@ if [[ "$1" == "storage-only" ]]; then
   exit 0
 fi
 
-if [[ "$1" == "install-habana-runtime" ]]; then
-  echo "[$(date)] Installing habanalabs-container-runtime on Gaudi worker node..."
-  export DEBIAN_FRONTEND=noninteractive
-  export NEEDRESTART_MODE=a
-  export NEEDRESTART_SUSPEND=1
+# if [[ "$1" == "install-habana-runtime" ]]; then
+#   echo "[$(date)] Installing habanalabs-container-runtime on Gaudi worker node..."
+#   export DEBIAN_FRONTEND=noninteractive
+#   export NEEDRESTART_MODE=a
+#   export NEEDRESTART_SUSPEND=1
   
-  if sudo DEBIAN_FRONTEND=noninteractive apt install -y habanalabs-container-runtime=1.21.0-555; then
-    echo "[$(date)] habanalabs-container-runtime installation successful on $(hostname)"
-  else
-    echo "[$(date)] WARNING: habanalabs-container-runtime installation failed on $(hostname), continuing..."
-  fi
-  exit 0
-fi
+#   if sudo DEBIAN_FRONTEND=noninteractive apt install -y habanalabs-container-runtime=1.21.0-555; then
+#     echo "[$(date)] habanalabs-container-runtime installation successful on $(hostname)"
+#   else
+#     echo "[$(date)] WARNING: habanalabs-container-runtime installation failed on $(hostname), continuing..."
+#   fi
+#   exit 0
+# fi
 
 
 # Model deploy code
-if [[ "$1" == "model-deploy" ]]; then
-  echo "[$(date)] Phase 2: Deploying models with PVC support"
-  cd /home/ubuntu/Enterprise-Inference/core
-  echo -e '3\n2\n1\nyes\ny\n' | bash inference-stack-deploy.sh --models "$2"
-  kubectl delete pods -l app.kubernetes.io/component=device-plugin,app.kubernetes.io/name=habana-ai -n habana-ai-operator --ignore-not-found=true
+# if [[ "$1" == "model-deploy" ]]; then
+#   echo "[$(date)] Phase 2: Deploying models with PVC support"
+#   cd /home/ubuntu/Enterprise-Inference/core
+#   echo -e '3\n2\n1\nyes\ny\n' | bash inference-stack-deploy.sh --models "$2"
+#   kubectl delete pods -l app.kubernetes.io/component=device-plugin,app.kubernetes.io/name=habana-ai -n habana-ai-operator --ignore-not-found=true
   
-  echo "[$(date)] Starting scaling logic for model $2..."
- # scaling logic
-  if [[ "$2" == "333" ]]; then
-    kubectl scale deployment vllm-qwen-7b --replicas=2
-    echo "[$(date)] Scaled vllm-qwen-7b to 2 replicas"
-  elif [[ "$2" == "334" ]]; then
-    kubectl scale deployment vllm-qwen-72b --replicas=2
-    echo "[$(date)] Scaled vllm-qwen-72b to 2 replicas"
-  else
-    echo "Unsupported model selected: $2"
-  fi
-  echo "[$(date)] Model deployment and scaling complete"
-  exit 0
+#   echo "[$(date)] Starting scaling logic for model $2..."
+#  # scaling logic
+#   if [[ "$2" == "333" ]]; then
+#     kubectl scale deployment vllm-qwen-7b --replicas=2
+#     echo "[$(date)] Scaled vllm-qwen-7b to 2 replicas"
+#   elif [[ "$2" == "334" ]]; then
+#     kubectl scale deployment vllm-qwen-72b --replicas=2
+#     echo "[$(date)] Scaled vllm-qwen-72b to 2 replicas"
+#   else
+#     echo "Unsupported model selected: $2"
+#   fi
+#   echo "[$(date)] Model deployment and scaling complete"
+#   exit 0
 
-fi
+# fi
 
 # Set non-interactive mode and configure apt to avoid hanging
 export DEBIAN_FRONTEND=noninteractive

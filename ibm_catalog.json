@@ -1,36 +1,34 @@
 {
     "products": [
         {
-            "label": "Intel® AI for Enterprise Inference with Generate Enterprise",
-            "name": "da-enterprise-inference",
+            "label": "Generate Enterprise",
+            "name": "da-generate-enterprise",
             "version": "3.3.4",
             "product_kind": "solution",
 			"tags": [
-              "opea",
-              "intel_gaudi",
-              "enterprise-inference",
               "generate-enterprise"
             ],
 		    "keywords": [
-              "opea",
-              "intel_gaudi",
-              "enterprise-inference",
               "generate-enterprise"
             ],
-	        "short_description": "Intel® AI for Enterprise Inference (Enterprise Inference) with Generate Enterprise is aimed to streamline the deployment and management of inference services on Intel® hardware.",
-			"long_description": "This solution automates the provisioning of virtual machines on IBM Cloud using Terraform, optimized for AI workloads powered by Intel® Gaudi® 3 AI accelerators. It deploys a Kubernetes cluster that supports both single-node and multi-node configurations. The multi-node setup includes three control plane nodes for orchestration and cluster management, along with worker nodes equipped with Intel® Gaudi® 3 for high-performance AI inference.The deployment integrates the Intel® AI for Enterprise Inference framework from the Open Platform for Enterprise AI (OPEA), enabling scalable deployment of Large Language Models (LLMs) across various configurations. It also includes key enterprise-grade features such as GenAI Gateway for secure and scalable access to generative AI models, Token Telemetry for detailed tracking and analysis of token usage across inference workloads, and Observability for real-time monitoring of system performance, resource utilization, and model behavior.By combining cutting-edge AI infrastructure with cloud automation, this solution provides a streamlined and efficient approach to deploying and managing machine learning models at scale.\n\n**Prerequisites:**\n- Review the [Getting Started Guide](https://github.com/opea-project/Enterprise-Inference/blob/main/third_party/IBM/docs/getting-started.md) for deployment instructions\n- Consult the [Sizing Guide](https://github.com/opea-project/Enterprise-Inference/blob/main/third_party/IBM/docs/sizing-guide.md) to understand Intel® Gaudi® 3 AI Accelerator capabilities and choose the optimal configuration for your AI models",
+	        "short_description": "Generate Enterprise is aimed to streamline enterprise operations with data-driven decisions, and automated efficiency, driving cost savings and competitive advantage.",
+			"long_description": "Generate Enterprise is aimed to streamline enterprise operations with data-driven decisions, and automated efficiency, driving cost savings and competitive advantage.",
             "features": [
 			  {
-                "title": "Optimized AI Deployment",
-                "description": "Leverage Intel® Gaudi® 3 AI accelerators to maximize performance for AI workloads, ensuring efficient processing and model deployment"
+                "title": "Agentic AI Cards",
+                "description": "Pre-built and customizable Agentic AI Cards designed for vertical-specific tasks — from analyzing earnings calls to generating healthcare procedure growth reports, to drafting RFPs. Cards work across document and database searches for maximum flexibility."
               },
 			  {
-                "title": "Automated Infrastructure Setup",
-                "description": "Utilization of Terraform scripts to automate the provisioning of virtual server instances (VSI) on IBM Cloud, reducing setup time and minimizing manual intervention"
+                "title": "Document Search",
+                "description": "Bring your documents into Generate and instantly run advanced Retrieval Augmented Generation (RAG) queries. Summarize lengthy reports, extract specific answers, or generate action items — all within seconds."
               },
               {
-                "title": "Seamless Integration with OPEA's Intel® AI for Enterprise Inference",
-                "description": "Deploy large language models (LLMs) using OPEA's Intel AI for Enterprise Inference framework, streamlining operations and improving productivity"
+                "title": "Database Search",
+                "description": "Query your structured data using plain English. Generate intelligently interprets your questions and retrieves actionable insights directly from your databases."
+              },
+              {
+                "title": "Service Pilot",
+                "description": "Connect your email inbox and empower your team with context-aware summaries and intelligent reply suggestions."
               }
             ],
 	        "flavors": [

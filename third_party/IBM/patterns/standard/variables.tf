@@ -77,7 +77,7 @@ variable "user_key" {
 variable "image" {
   description = "IBM Cloud instance image"
   type        = string
-  default     = "gaudi3-intel-ibm"
+  default     = "ibm-ubuntu-22-04-5-minimal-amd64-2"
 }
 variable "hugging_face_token" {
   description = "This variable specifies the hf token."
@@ -100,12 +100,12 @@ variable "generate_enterprise_docker_password" {
 variable "models" {
   description = "Model number to be deployed"
   type        = string
-  default     = "334"
+  default     = "21"
 }
 variable "cpu_or_gpu" {
   description = "This variable specifies where the model should be running"
   type        = string
-  default     = "gaudi3"
+  default     = "cpu"
 }
 variable "vault_pass_code" {
   description = "Vault Pass code for Encryption/Decryption"
@@ -136,7 +136,7 @@ variable "deploy_llm_models" {
 variable "deploy_genai_gateway" {
   description = "This variable specfies whether we need to deploy Gen AI Gateway"
   type        = string
-  default     = "yes"
+  default     = "no"
 }
 variable "deploy_generate_enterprise" {
   description = "This variable specfies whether we need to deploy Generate Enterprise"
@@ -190,7 +190,7 @@ variable "xeon_image" {
 variable "gaudi_image" {
   description = "IBM Cloud instance image for Gaudi nodes in multi-node deployment"
   type        = string
-  default     = "gaudi3-intel-ibm"  # Default Gaudi image
+  default     = "ibm-ubuntu-22-04-5-minimal-amd64-2"  # Default Gaudi image
 }
 
 variable "control_plane_names" {
@@ -208,7 +208,7 @@ variable "worker_gaudi_names" {
 variable "instance_profile" {
   description = "IBM Cloud instance profile for single-node deployment and worker nodes in multi-node deployment"
   type        = string
-  default     = "gx3d-160x1792x8gaudi3"
+  default     = "cx2d-32x64"
 }
 
 variable "control_plane_instance_profile" {

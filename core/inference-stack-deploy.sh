@@ -1738,7 +1738,7 @@ fresh_installation() {
                 echo "Skipping GenAI Gateway deployment..."
             fi
             
-            if [[ "$deploy_genai_gateway" == "yes" || "$deploy_generate_enterprise" == "yes" ]]; then   
+            if [[ "$deploy_generate_enterprise" == "yes" ]]; then   
                 echo "Deploying Generate Enterprise..."
                 execute_and_check "Deploying Generate Enterprise..." deploy_generate_enterprise_playbook "$@" \
                     "Generate Enterprise is deployed successfully." \
