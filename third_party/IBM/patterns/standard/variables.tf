@@ -82,7 +82,7 @@ variable "image" {
 variable "hugging_face_token" {
   description = "This variable specifies the hf token."
   type        = string
-  default     = ""
+  default     = "dummy"
   sensitive   = true
 }
 variable "generate_enterprise_docker_user" {
