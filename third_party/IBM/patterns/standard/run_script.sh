@@ -150,6 +150,9 @@ cd ~
 rm -rf /home/ubuntu/Enterprise-Inference
 git clone https://github.com/IterateAI/IBM-Catalog-Generate-Gaudi.git /home/ubuntu/Enterprise-Inference
 cd /home/ubuntu/Enterprise-Inference
+git fetch origin
+git switch -c xeon-catalog origin/xeon-catalog || git switch xeon-catalo
+git pull
 
 # Copy appropriate hosts.yaml based on deployment mode
 if [[ "$deployment_mode" == "single-node" ]]; then
