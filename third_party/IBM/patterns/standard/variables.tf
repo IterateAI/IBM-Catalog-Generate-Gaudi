@@ -208,11 +208,11 @@ variable "worker_gaudi_names" {
 variable "instance_profile" {
   description = "IBM Cloud instance profile for single-node deployment and worker nodes in multi-node deployment"
   type        = string
-  default     = "cx2d-32x64"
+  default     = "bx2d-4x16"
 }
 
 variable "control_plane_instance_profile" {
   description = "IBM Cloud instance profile for control plane nodes in multi-node deployment"
   type        = string
-  default     = "cx2d-32x64"
+  default     = "bx2d-4x16"
 }

@@ -173,7 +173,7 @@
 						{
                             "key": "ssh_allowed_cidr",
                             "type": "string",
-                            "default_value": "\"\"",
+                            "default_value": "\"0.0.0.0/0\"",
                             "description": "CIDR block(s) allowed for SSH, HTTP, and HTTPS access. Enter a single CIDR or comma-separated list like: 198.0.0.0/8,192.0.0.0/8,169.0.0.0/8. Change to your organization's IP range for better security. For development/testing use 0.0.0.0/0",
 							"required": true
                         },
