@@ -185,6 +185,11 @@ read_config_file() {
     if [ -f "$config_file" ]; then
         echo "Configuration file found, setting vars!"
         echo "---------------------------------------"
+        
+        # Convert CRLF to LF if needed (handles Windows-style line endings)
+        tr -d '\r' < "$config_file" > "$config_file.tmp"
+        mv "$config_file.tmp" "$config_file"
+        
         while IFS='=' read -r key value || [ -n "$key" ]; do
             # Trim leading/trailing whitespace
             key=$(echo "$key" | xargs)
@@ -196,7 +201,7 @@ read_config_file() {
                 value="no"
             fi
             printf "%s=%s\n" "$key" "$value" >> temp_env_vars                        
-        done < "$config_file"        
+        done < "$config_file"              
         
         # Load the environment variables from the temporary file
         source temp_env_vars        
