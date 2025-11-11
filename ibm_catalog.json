@@ -128,14 +128,14 @@
                         },
                         {
                             "key": "generate_enterprise_docker_user",
-                            "type": "multiline_secure_value",
+                            "type": "string",
                             "description": "This variable specifies the Generate Enterprise docker registry username. ",
                             "required": true,
                             "hidden": true
                         },
                         {
                             "key": "generate_enterprise_docker_password",
-                            "type": "multiline_secure_value",
+                            "type": "string",
                             "description": "This variable specifies the Generate Enterprise docker registry password. ",
                             "required": true,
                             "hidden": true
@@ -179,7 +179,7 @@
                         },
                         {
                             "key": "vault_pass_code",
-                            "type": "multiline_secure_value",
+                            "type": "string",
                             "description": "Enter the master vault pass code",
 							"required": true,
                             "hidden": true
