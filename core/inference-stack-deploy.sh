@@ -186,10 +186,6 @@ read_config_file() {
         echo "Configuration file found, setting vars!"
         echo "---------------------------------------"
         
-        # Convert CRLF to LF if needed (handles Windows-style line endings)
-        tr -d '\r' < "$config_file" > "$config_file.tmp"
-        mv "$config_file.tmp" "$config_file"
-        
         while IFS='=' read -r key value || [ -n "$key" ]; do
             # Trim leading/trailing whitespace
             key=$(echo "$key" | xargs)

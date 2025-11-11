@@ -89,13 +89,11 @@ variable "generate_enterprise_docker_user" {
   description = "This variable specifies the generate enterprise docker user."
   type        = string
   default     = ""
-  sensitive   = true
 }
 variable "generate_enterprise_docker_password" {
   description = "This variable specifies the generate enterprise docker password."
   type        = string
   default     = ""
-  sensitive   = true
 }
 variable "models" {
   description = "Model number to be deployed"
@@ -111,7 +109,6 @@ variable "vault_pass_code" {
   description = "Vault Pass code for Encryption/Decryption"
   type        = string
   default     = ""
-  sensitive   = true
 }
 variable "deploy_kubernetes_fresh" {
   description = "This variable specfies whether to deploy Kubernetes cluster freshly"

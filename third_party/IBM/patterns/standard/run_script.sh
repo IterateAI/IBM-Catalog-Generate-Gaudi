@@ -169,3 +169,11 @@ cd core
 # Deploys infrastructure only (no models)
 echo "[$(date)] Phase 1: Deploying entire infrastructure stack without models"
 echo -e '1\nyes\n' | bash inference-stack-deploy.sh
+
+# Update with dummy values after usage
+for file in /home/ubuntu/inference-config.cfg /home/ubuntu/Enterprise-Inference/core/inference-config.cfg; do
+  sed -i \
+    -e 's/^[[:space:]]*generate_enterprise_docker_user=.*/generate_enterprise_docker_user=dummy-user/' \
+    -e 's/^[[:space:]]*generate_enterprise_docker_password=.*/generate_enterprise_docker_password=dummy-pass/' \
+    "$file"
+done
