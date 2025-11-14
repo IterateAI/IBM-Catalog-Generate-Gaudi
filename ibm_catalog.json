@@ -1,7 +1,7 @@
 {
     "products": [
         {
-            "label": "Intel® AI for Enterprise Inference with Generate Enterprise",
+            "label": "Generate Enterprise Gaudi",
             "name": "da-enterprise-inference",
             "version": "3.3.4",
             "product_kind": "solution",
