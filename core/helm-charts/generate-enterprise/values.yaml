@@ -21,7 +21,7 @@ milvus:
 
 generateenterprise:
   image: "iterateai/generate-enterprise"
-  tag: "release-ibm-generate-v3.3.4-xeon"
+  tag: "release-ibm-generate-xeon-v3.3.4"
   llmUrl: "http://genai-gateway-service.genai-gateway.svc.cluster.local:4000"
   llmModel: "Qwen/Qwen2.5-72B-Instruct"
   llmApiKey: ""
