@@ -208,11 +208,20 @@ variable "worker_gaudi_names" {
 variable "instance_profile" {
   description = "IBM Cloud instance profile for single-node deployment and worker nodes in multi-node deployment"
   type        = string
-  default     = "bx2d-4x16"
+  default     = "cx2d-32x64"
 }
 
 variable "control_plane_instance_profile" {
   description = "IBM Cloud instance profile for control plane nodes in multi-node deployment"
   type        = string
-  default     = "bx2d-4x16"
+  default     = "cx2d-32x64"
+}
+
+variable "healthcare_units" {
+  description = "Number of Healthcare Units"
+  type        = number
+  validation {
+    condition     = contains([1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 13000, 14000, 15000], var.healthcare_units)
+    error_message = "healthcare_units must be a multiple of 1000 between 1000 and 15000"
+  }
 }

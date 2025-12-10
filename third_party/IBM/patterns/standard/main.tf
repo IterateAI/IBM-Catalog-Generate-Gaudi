@@ -22,6 +22,24 @@ locals {
         [for s in split(",", var.ssh_allowed_cidr) : trimspace(s)] :
         [var.ssh_allowed_cidr]
     )
+
+    healthcare_instance_profile_map = {
+      1000  = "cx2d-32x64"
+      2000  = "cx3d-32x80"
+      3000  = "cx2-48x96"
+      4000  = "cx3d-48x120"
+      5000  = "cx2-64x128"
+      6000  = "cx2-96x192"
+      7000  = "cx3d-96x240"
+      8000  = "cx2d-128x256"
+      9000  = "cx3d-128x320"
+      10000 = "cx3dc-96x240"
+      11000 = "cx3d-176x440"
+      12000 = "cx3dc-128x320"
+      13000 = "vx2d-144x2016"
+      14000 = "ux2d-100x2800"
+      15000 = "ux2d-100x2800"
+    }
 }
 
 data "ibm_resource_group" "target_rg" {
@@ -192,7 +210,7 @@ resource "ibm_is_instance" "vsi" {
     keys    = [data.ibm_is_ssh_key.ssh_key_id.id]
     image   = data.ibm_is_image.packer_image.id
     resource_group = data.ibm_resource_group.target_rg.id
-    profile = var.instance_profile
+    profile = local.instance_profile_map[var.healthcare_units]
 
     primary_network_interface {
         subnet          = ibm_is_subnet.new_subnet.id
@@ -209,7 +227,7 @@ resource "ibm_is_instance" "control_plane_nodes" {
     keys    = [data.ibm_is_ssh_key.ssh_key_id.id]
     image   = data.ibm_is_image.xeon_image[0].id
     resource_group = data.ibm_resource_group.target_rg.id
-    profile = var.control_plane_instance_profile
+    profile = local.instance_profile_map[var.healthcare_units]
 
     primary_network_interface {
         subnet          = ibm_is_subnet.new_subnet.id

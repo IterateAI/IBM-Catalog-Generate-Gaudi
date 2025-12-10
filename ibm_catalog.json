@@ -183,8 +183,75 @@
                             "description": "Enter the master vault pass code",
 							"required": true,
                             "hidden": true
-                        }
-						
+                        },
+                        {
+                            "key": "healthcare_units",
+                            "type": "number",
+                            "description": "Number of Healthcare Units",
+							"required": true,
+                            "options": [
+                                {
+                                    "displayname": "1000",
+                                    "value": 1000
+                                },
+                                {
+                                    "displayname": "2000",
+                                    "value": 2000
+                                },
+                                {
+                                    "displayname": "3000",
+                                    "value": 3000
+                                },
+                                {
+                                    "displayname": "4000",
+                                    "value": 4000
+                                },
+                                {
+                                    "displayname": "5000",
+                                    "value": 5000
+                                },
+                                {
+                                    "displayname": "6000",
+                                    "value": 6000
+                                },
+                                {
+                                    "displayname": "7000",
+                                    "value": 7000
+                                },
+                                {
+                                    "displayname": "8000",
+                                    "value": 8000
+                                },
+                                {
+                                    "displayname": "9000",
+                                    "value": 9000
+                                },
+                                {
+                                    "displayname": "10000",
+                                    "value": 10000
+                                },
+                                {
+                                    "displayname": "11000",
+                                    "value": 11000
+                                },
+                                {
+                                    "displayname": "12000",
+                                    "value": 12000
+                                },
+                                {
+                                    "displayname": "13000",
+                                    "value": 13000
+                                },
+                                {
+                                    "displayname": "14000",
+                                    "value": 14000
+                                },
+                                {
+                                    "displayname": "15000",
+                                    "value": 15000
+                                }
+                            ]
+                        }				
 		            ]
 		        }
 	        ]
