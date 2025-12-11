@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: usage-metering-job
+spec:
+  schedule: "10 0 2 * *"   # UTC 00:10 on the 2nd day of each month
+  timeZone: "UTC"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          imagePullSecrets:
+            - name: generate-reg-cred
+          restartPolicy: Never
+          containers:
+            - name: "{{ .Release.Name }}-usage-metering"
+              image: "{{ .Values.metering.image }}:{{ .Values.metering.tag }}"
+              env:
+                - name: USAGE_ENDPOINT
+                  value: "http://{{ .Release.Name }}-generate-enterprise-service.generate-enterprise.svc.cluster.local:1881/generate/api/v1/usage-stats/all"
+                - name: IBM_BASE_URL
+                  value: "https://billing.cloud.ibm.com"
+                - name: RESOURCE_ID
+                  value: {{ .Values.metering.resourceId | quote }}
+                - name: RESOURCE_INSTANCE_ID
+                  value: {{ .Values.metering.instanceId | quote }}
+                - name: PLAN_ID
+                  value: {{ .Values.metering.planId | quote }}
+                - name: REGION
+                  value: {{ .Values.metering.region | quote }}
+              volumeMounts:
+                - name: ibm-usage-token
+                  mountPath: /var/run/secrets/ibm
+                  readOnly: true
+                - name: internal-usage-key
+                  mountPath: /var/run/secrets/internal
+                  readOnly: true
+          volumes:
+            - name: ibm-usage-token
+              secret:
+                secretName: ibm-usage-token
+            - name: internal-usage-key
+              secret:
+                secretName: internal-usage-key

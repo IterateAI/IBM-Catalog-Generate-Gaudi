@@ -43,3 +43,11 @@ docworker:
 
 storage:
   accessMode: ReadWriteOnce
+
+metering:
+  image: "iterateai/generate-enterprise"
+  tag: "ibm-metering-cron-job"
+  resourceId: ""
+  instanceId: ""
+  planId: ""
+  region: ""
