@@ -1,0 +1,43 @@
+# Celery worker container with Terraform capabilities
+FROM hashicorp/terraform:1.14.1
+
+# Install additional tools and Python
+RUN apk add --no-cache \
+    bash \
+    curl \
+    jq \
+    python3 \
+    py3-pip \
+    python3-dev \
+    gcc \
+    musl-dev \
+    postgresql-dev
+
+# Install IBM Cloud CLI and plugins
+RUN curl -fsSL https://clis.cloud.ibm.com/install/linux | sh && \
+    ibmcloud plugin install infrastructure-service && \
+    ibmcloud plugin install container-service
+
+# Create terraform working directory
+RUN mkdir -p /terraform/workspace
+
+# Set working directory for the app
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt /app/
+RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
+
+# Copy application code
+COPY app/ /app/app/
+
+# Set environment variables (runtime values will override these defaults)
+ENV PYTHONPATH=/app
+ENV TF_LOG="INFO"
+ENV TF_LOG_PATH="/terraform/terraform.log"
+
+# Create entrypoint script that initializes IBM Cloud and runs the command
+RUN printf '#!/bin/bash\nset -e\n\n# Initialize IBM Cloud CLI if API key is provided\nif [ ! -z "$IBMCLOUD_API_KEY" ]; then\n    echo "Logging into IBM Cloud..."\n    ibmcloud login --apikey "$IBMCLOUD_API_KEY" -r "$IBMCLOUD_REGION" --quiet || echo "IBM Cloud login failed, continuing..."\nfi\n\n# Execute the command passed to the container\nexec "$@"\n' > /entrypoint.sh && chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["celery", "-A", "app.tasks", "worker", "--loglevel=info", "--concurrency=1"]

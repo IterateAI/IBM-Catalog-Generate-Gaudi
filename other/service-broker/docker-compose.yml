@@ -1,0 +1,56 @@
+services:
+  broker:
+    build: .
+    container_name: service_broker
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: postgres:16
+    container_name: service-broker-db
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:8
+    container_name: service-broker-redis
+    ports:
+      - "6379:6379"
+
+  # Celery worker with Terraform support
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.terraform
+    container_name: celery_worker
+    env_file:
+      - .env
+    environment:
+      TERRAFORM_DIR: /terraform
+    volumes:
+      - terraform_data:/terraform/workspace  # For state persistence
+      - ./terraform:/terraform/base:ro  # CHANGE THIS PATH AT DEPLOYMENT
+    depends_on:
+      - redis
+      - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  terraform_data:
