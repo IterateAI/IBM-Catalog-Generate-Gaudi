@@ -78,38 +78,6 @@
       debug:
         msg: "Secret generate-reg-cred created."
       run_once: true
-    - name: Create IBM Token Secret
-      community.kubernetes.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: ibm-token
-            namespace: generate-enterprise
-          type: Opaque
-          data:
-            ibm_token: "{{ ibm_token_value | b64encode }}"
-    - name: IBM Token Secret Create
-      debug:
-        msg: "Secret ibm_token created."
-      run_once: true
-    - name: Create Usage API Key Secret
-      community.kubernetes.k8s:
-        state: present
-        definition:
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: internal-usage-key
-            namespace: generate-enterprise
-          type: Opaque
-          data:
-            usage_api_key: "{{ usage_api_key_value | b64encode }}"
-    - name: Usage API Key Secret Create
-      debug:
-        msg: "Secret usage_api_key created."
-      run_once: true
     - name: Copy Dependency Files Message
       debug:
         msg: "Copying dependency files to the nodes please wait..."
