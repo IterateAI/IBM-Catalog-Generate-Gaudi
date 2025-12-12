@@ -197,17 +197,13 @@ resource "ibm_is_subnet" "new_subnet" {
     resource_group           = data.ibm_resource_group.target_rg.id
 }
 
-data "ibm_is_ssh_key" "ssh_key_id" {
-    name = var.ssh_key
-}
-
 # Single-node instance (when deployment_mode is single-node)
 resource "ibm_is_instance" "vsi" {
     count   = local.is_multi_node ? 0 : 1
     name    = "${local.BASENAME}-vsi-${random_string.suffix.result}"
     vpc     = ibm_is_vpc.new_vpc.id
     zone    = var.instance_zone
-    keys    = [data.ibm_is_ssh_key.ssh_key_id.id]
+    keys    = []
     image   = data.ibm_is_image.packer_image.id
     resource_group = data.ibm_resource_group.target_rg.id
     profile = local.instance_profile_map[var.healthcare_units]

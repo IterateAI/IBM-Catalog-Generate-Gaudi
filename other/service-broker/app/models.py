@@ -19,7 +19,12 @@ class ServiceInstance(Base):
     # Custom parameter fields for easy access
     email = Column(String, nullable=True)
     name = Column(String, nullable=True)
-    
+    org = Column(String, nullable=True)
+    healthcare_units = Column(String, nullable=True)
+    ibm_region = Column(String, nullable=True)
+    instance_zone = Column(String, nullable=True)
+    cluster_url = Column(String)
+
     # Terraform deployment tracking
     terraform_state_path = Column(String, nullable=True)
     deployment_logs = Column(Text, nullable=True)

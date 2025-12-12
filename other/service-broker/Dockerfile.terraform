@@ -31,6 +31,11 @@ RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 # Copy application code
 COPY app/ /app/app/
 
+# Create dummy SSH private key for internal use
+RUN mkdir -p /app/keys && \
+    printf "-----BEGIN PRIVATE KEY-----\nDUMMY-KEY-CONTENT-NOT-FOR-USE\n-----END PRIVATE KEY-----\n" > /app/keys/dummy_id_rsa && \
+    chmod 600 /app/keys/dummy_id_rsa
+
 # Set environment variables (runtime values will override these defaults)
 ENV PYTHONPATH=/app
 ENV TF_LOG="INFO"

@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 
 REDIS_URL = os.getenv("REDIS_URL")
 TERRAFORM_DIR = os.getenv("TERRAFORM_DIR", "/terraform")
+DOCKER_USER = os.getenv("DOCKER_USER")
+DOCKER_PASS = os.getenv("DOCKER_PASS")
+IBMCLOUD_API_KEY = os.getenv("IBMCLOUD_API_KEY")
 
 celery = Celery(
     "broker_tasks",
@@ -35,8 +38,8 @@ def update_instance_status(instance_id: str, state: str, description: str, logs:
             instance.state = state
             instance.description = description
             instance.updated_at = datetime.utcnow()
-            if logs:
-                instance.deployment_logs = logs
+            # if logs:
+            #     instance.deployment_logs = logs
             db.commit()
             logger.info(f"Updated instance {instance_id}: {state} - {description}")
     except Exception as e:
@@ -64,7 +67,7 @@ def run_terraform_command(command: list, cwd: str, timeout: int = 7200) -> tuple
         return -1, "", str(e)
 
 @celery.task(bind=True, time_limit=7200, soft_time_limit=7000)  # 2 hour limit
-def provision_instance_task(self, instance_id: str):
+def provision_instance_task(self, instance_id: str, healthcare_units: int, ibm_region: str, instance_zone: str, cluster_url: str, user_cert: str, user_key: str):
     """Provision service instance using Terraform"""
     db = SessionLocal()
     
@@ -89,36 +92,57 @@ def provision_instance_task(self, instance_id: str):
         shared_tf_dir = os.path.join(TERRAFORM_DIR, "workspace")
         os.makedirs(shared_tf_dir, exist_ok=True)
         
-        # Clean previous state (since we're reusing directory)
-        for file in ["terraform.tfvars", "terraform.tfstate", "terraform.tfstate.backup", "tfplan"]:
+        # Copy base terraform files ONCE if workspace is empty of .tf files
+        base_tf_dir = os.path.join(TERRAFORM_DIR, "base")
+        tf_files_exist = any(f.endswith('.tf') for f in os.listdir(shared_tf_dir) if os.path.isfile(os.path.join(shared_tf_dir, f)))
+        
+        if not tf_files_exist:
+            if os.path.exists(base_tf_dir):
+                # Copy all base files once (excluding any existing state files)
+                subprocess.run(["find", base_tf_dir, "-name", "*.tf", "-exec", "cp", "{}", shared_tf_dir, ";"], check=True)
+                logger.info("Copied base Terraform files to workspace")
+            else:
+                error_msg = "Terraform base directory not found. Ensure host terraform directory is mounted."
+                update_instance_status(instance_id, "failed", error_msg)
+                return {"status": "failed", "description": error_msg}
+        
+        # Clean only temporary files, preserve all state files
+        for file in ["terraform.tfvars", "tfplan"]:
             file_path = os.path.join(shared_tf_dir, file)
             if os.path.exists(file_path):
                 os.remove(file_path)
         
-        # Copy your pre-built terraform files from mounted base directory
-        base_tf_dir = os.path.join(TERRAFORM_DIR, "base")
-        if os.path.exists(base_tf_dir):
-            subprocess.run(["cp", "-r", f"{base_tf_dir}/*", shared_tf_dir], shell=True)
-        else:
-            error_msg = "Terraform base directory not found. Ensure host terraform directory is mounted."
-            update_instance_status(instance_id, "failed", error_msg)
-            return {"status": "failed", "description": error_msg}
+        # Instance-specific state file path
+        instance_state_file = os.path.join(shared_tf_dir, f"terraform-{instance_id}.tfstate")
         
         # Create terraform.tfvars with custom parameters
         tfvars_content = f"""
-instance_id = "{instance_id}"
-email = "{email}"
-name = "{name}"
-service_id = "{instance.service_id}"
-plan_id = "{instance.plan_id}"
-organization_guid = "{instance.organization_guid or ''}"
-space_guid = "{instance.space_guid or ''}"
+models = "21"
+hugging_face_token = "hf_dummy"
+deployment_mode = "single-node"
+worker_gaudi_count = 3 
+ssh_allowed_cidr = "0.0.0.0/0"
+vault_pass_code = "pass" 
+instance_profile = "cx3d-32x80"
+gaudi_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
+xeon_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
+cpu_or_gpu = "cpu"
+image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
+ssh_key = "my-inference-key"
+ssh_private_key = "/app/keys/dummy_id_rsa" # change path 
+resource_group = "enterprise-inference-rg"
+
+ibmcloud_api_key = "{IBMCLOUD_API_KEY}"
+generate_enterprise_docker_user = "{DOCKER_USER}"
+generate_enterprise_docker_password = "{DOCKER_USER}"
+
+ibmcloud_region = "{ibm_region}"
+instance_zone = "{instance_zone}"
+cluster_url = "{cluster_url}"
+user_cert = "{user_cert}"
+user_key = "{user_key}"
+healthcare_units = "{healthcare_units}"
 """
-        
-        # Add any additional parameters from the request
-        for key, value in (instance.parameters or {}).items():
-            if key not in ['email', 'name']:  # Skip already handled params
-                tfvars_content += f'{key} = "{value}"\n'
         
         tfvars_path = os.path.join(shared_tf_dir, "terraform.tfvars")
         with open(tfvars_path, 'w') as f:
@@ -138,9 +162,9 @@ space_guid = "{instance.space_guid or ''}"
         
         update_instance_status(instance_id, "in progress", "Running Terraform plan")
         
-        # Plan
+        # Plan with instance-specific state
         returncode, stdout, stderr = run_terraform_command(
-            ["terraform", "plan", "-out=tfplan"], shared_tf_dir
+            ["terraform", "plan", f"-state={instance_state_file}", "-out=tfplan"], shared_tf_dir
         )
         
         if returncode != 0:
@@ -150,9 +174,9 @@ space_guid = "{instance.space_guid or ''}"
         
         update_instance_status(instance_id, "in progress", "Applying Terraform configuration")
         
-        # Apply
+        # Apply with instance-specific state
         returncode, stdout, stderr = run_terraform_command(
-            ["terraform", "apply", "-auto-approve", "tfplan"], shared_tf_dir
+            ["terraform", "apply", f"-state={instance_state_file}", "-auto-approve", "tfplan"], shared_tf_dir
         )
         
         if returncode != 0:
@@ -160,14 +184,14 @@ space_guid = "{instance.space_guid or ''}"
             update_instance_status(instance_id, "failed", error_msg, f"STDOUT:\n{stdout}\nSTDERR:\n{stderr}")
             return {"status": "failed", "description": error_msg}
         
-        # Store terraform state path
-        instance.terraform_state_path = os.path.join(shared_tf_dir, "terraform.tfstate")
+        # Store terraform state path (instance-specific)
+        instance.terraform_state_path = instance_state_file
         db.commit()
         
         update_instance_status(
             instance_id, 
             "succeeded", 
-            "Provisioning completed successfully",
+            "Successfully provisioned",
             f"STDOUT:\n{stdout}\nSTDERR:\n{stderr}"
         )
         
@@ -213,11 +237,55 @@ def deprovision_instance_task(self, instance_id: str):
             db.commit()
             return {"status": "succeeded", "description": "No terraform workspace found, instance removed"}
         
+        update_instance_status(instance_id, "in progress", "Preparing Terraform destroy")
+        
+        # Base .tf files should already be in workspace from provisioning
+        # No need to copy again - just recreate tfvars and use existing state
+        
+        # Recreate terraform.tfvars with original provisioning parameters
+        # This is CRITICAL - Terraform needs the same variables to know what to destroy
+        tfvars_content = f"""
+models = "21"
+hugging_face_token = "hf_dummy"
+deployment_mode = "single-node"
+worker_gaudi_count = 3 
+ssh_allowed_cidr = "0.0.0.0/0"
+vault_pass_code = "pass" 
+instance_profile = "cx3d-32x80"
+gaudi_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
+xeon_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
+cpu_or_gpu = "cpu"
+image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
+ssh_key = "my-inference-key"
+ssh_private_key = "/app/keys/dummy_id_rsa"
+resource_group = "enterprise-inference-rg"
+
+ibmcloud_api_key = "{IBMCLOUD_API_KEY}"
+generate_enterprise_docker_user = "{DOCKER_USER}"
+generate_enterprise_docker_password = "{DOCKER_PASS}"
+
+ibmcloud_region = "{instance.ibm_region or 'us-south'}"
+instance_zone = "{instance.instance_zone or 'us-south-1'}"
+cluster_url = "{instance.cluster_url or ''}"
+healthcare_units = "{instance.healthcare_units or '1'}"
+"""
+        
+        tfvars_path = os.path.join(shared_tf_dir, "terraform.tfvars")
+        with open(tfvars_path, 'w') as f:
+            f.write(tfvars_content)
+        
         update_instance_status(instance_id, "in progress", "Running Terraform destroy")
         
-        # Destroy
+        # Use the stored state file path for this specific instance
+        if instance.terraform_state_path and os.path.exists(instance.terraform_state_path):
+            state_file = instance.terraform_state_path
+        else:
+            # Fallback to expected location if stored path is missing
+            state_file = os.path.join(shared_tf_dir, f"terraform-{instance_id}.tfstate")
+        
+        # Destroy with the instance-specific state file
         returncode, stdout, stderr = run_terraform_command(
-            ["terraform", "destroy", "-auto-approve"], shared_tf_dir
+            ["terraform", "destroy", f"-state={state_file}", "-auto-approve"], shared_tf_dir
         )
         
         if returncode != 0:
@@ -234,12 +302,15 @@ def deprovision_instance_task(self, instance_id: str):
         except Exception as e:
             logger.warning(f"Failed to clean up terraform workspace: {str(e)}")
         
+        # TESTING: Just mark as succeeded and remove from database
+        update_instance_status(instance_id, "succeeded", "Deprovisioning successfull")
+        
         # Remove instance from database
         db.delete(instance)
         db.commit()
         
         logger.info(f"Successfully deprovisioned instance {instance_id}")
-        return {"status": "succeeded", "description": "Deprovisioning completed successfully"}
+        return {"status": "succeeded", "description": "TEST: Deprovisioning completed successfully"}
         
     except Exception as e:
         error_msg = f"Deprovisioning failed with exception: {str(e)}"
