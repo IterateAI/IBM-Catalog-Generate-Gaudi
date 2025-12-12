@@ -45,7 +45,8 @@ services:
       TERRAFORM_DIR: /terraform
     volumes:
       - terraform_data:/terraform/workspace  # For state persistence
-      - ./terraform:/terraform/base:ro  # CHANGE THIS PATH AT DEPLOYMENT
+      - ./keys/id_rsa:/app/keys/id_rsa # CHANGE THIS PATH AT DEPLOYMENT
+      # - ./terraform:/terraform/base:ro  # CHANGE THIS PATH AT DEPLOYMENT
     depends_on:
       - redis
       - db

@@ -6,6 +6,7 @@ import logging
 from datetime import datetime
 from app.database import SessionLocal
 from app.models import ServiceInstance
+from app.celery import celery
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,19 +16,6 @@ TERRAFORM_DIR = os.getenv("TERRAFORM_DIR", "/terraform")
 DOCKER_USER = os.getenv("DOCKER_USER")
 DOCKER_PASS = os.getenv("DOCKER_PASS")
 IBMCLOUD_API_KEY = os.getenv("IBMCLOUD_API_KEY")
-
-celery = Celery(
-    "broker_tasks",
-    broker=REDIS_URL,
-    backend=REDIS_URL,
-)
-
-# Configure Celery to run only 1 task at a time
-celery.conf.worker_concurrency = 1
-celery.conf.task_routes = {
-    'app.tasks.provision_instance_task': {'queue': 'provision'},
-    'app.tasks.deprovision_instance_task': {'queue': 'deprovision'},
-}
 
 def update_instance_status(instance_id: str, state: str, description: str, logs: str = None):
     """Update service instance status in database"""
@@ -99,7 +87,11 @@ def provision_instance_task(self, instance_id: str, healthcare_units: int, ibm_r
         if not tf_files_exist:
             if os.path.exists(base_tf_dir):
                 # Copy all base files once (excluding any existing state files)
-                subprocess.run(["find", base_tf_dir, "-name", "*.tf", "-exec", "cp", "{}", shared_tf_dir, ";"], check=True)
+                # Make sure shared_tf_dir exists
+                subprocess.run(["mkdir", "-p", shared_tf_dir], check=True)
+
+                # Copy everything from base_tf_dir into shared_tf_dir (files + folders)
+                subprocess.run(["cp", "-r", f"{base_tf_dir}/.", shared_tf_dir], check=True)
                 logger.info("Copied base Terraform files to workspace")
             else:
                 error_msg = "Terraform base directory not found. Ensure host terraform directory is mounted."
@@ -114,6 +106,9 @@ def provision_instance_task(self, instance_id: str, healthcare_units: int, ibm_r
         
         # Instance-specific state file path
         instance_state_file = os.path.join(shared_tf_dir, f"terraform-{instance_id}.tfstate")
+
+        user_cert_literal = user_cert.replace("\n", "\\n")
+        user_key_literal = user_key.replace("\n", "\\n")
         
         # Create terraform.tfvars with custom parameters
         tfvars_content = f"""
@@ -128,8 +123,8 @@ gaudi_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
 xeon_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
 cpu_or_gpu = "cpu"
 image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
-ssh_key = "my-inference-key"
-ssh_private_key = "/app/keys/dummy_id_rsa" # change path 
+ssh_key = "service-broker-key"
+ssh_private_key = "/app/keys/id_rsa"
 resource_group = "enterprise-inference-rg"
 
 ibmcloud_api_key = "{IBMCLOUD_API_KEY}"
@@ -139,9 +134,9 @@ generate_enterprise_docker_password = "{DOCKER_USER}"
 ibmcloud_region = "{ibm_region}"
 instance_zone = "{instance_zone}"
 cluster_url = "{cluster_url}"
-user_cert = "{user_cert}"
-user_key = "{user_key}"
-healthcare_units = "{healthcare_units}"
+user_cert = "{user_cert_literal}"
+user_key = "{user_key_literal}"
+healthcare_units = {healthcare_units}
 """
         
         tfvars_path = os.path.join(shared_tf_dir, "terraform.tfvars")
@@ -256,8 +251,8 @@ gaudi_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
 xeon_image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
 cpu_or_gpu = "cpu"
 image = "ibm-ubuntu-22-04-5-minimal-amd64-2"
-ssh_key = "my-inference-key"
-ssh_private_key = "/app/keys/dummy_id_rsa"
+ssh_key = "service-broker-key"
+ssh_private_key = "/app/keys/id_rsa"
 resource_group = "enterprise-inference-rg"
 
 ibmcloud_api_key = "{IBMCLOUD_API_KEY}"
@@ -267,7 +262,9 @@ generate_enterprise_docker_password = "{DOCKER_PASS}"
 ibmcloud_region = "{instance.ibm_region or 'us-south'}"
 instance_zone = "{instance.instance_zone or 'us-south-1'}"
 cluster_url = "{instance.cluster_url or ''}"
-healthcare_units = "{instance.healthcare_units or '1'}"
+user_cert = "-----BEGIN CERTIFICATE-----\\nDUMMYCERTDATA\\n-----END CERTIFICATE-----"
+user_key = "-----BEGIN PRIVATE KEY-----\\nDUMMYKEYDATA\\n-----END PRIVATE KEY-----"
+healthcare_units = {instance.healthcare_units}
 """
         
         tfvars_path = os.path.join(shared_tf_dir, "terraform.tfvars")

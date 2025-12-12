@@ -197,16 +197,20 @@ resource "ibm_is_subnet" "new_subnet" {
     resource_group           = data.ibm_resource_group.target_rg.id
 }
 
+data "ibm_is_ssh_key" "ssh_key_id" {
+    name = var.ssh_key
+}
+
 # Single-node instance (when deployment_mode is single-node)
 resource "ibm_is_instance" "vsi" {
     count   = local.is_multi_node ? 0 : 1
     name    = "${local.BASENAME}-vsi-${random_string.suffix.result}"
     vpc     = ibm_is_vpc.new_vpc.id
     zone    = var.instance_zone
-    keys    = []
+    keys    = [data.ibm_is_ssh_key.ssh_key_id.id]
     image   = data.ibm_is_image.packer_image.id
     resource_group = data.ibm_resource_group.target_rg.id
-    profile = local.instance_profile_map[var.healthcare_units]
+    profile = local.healthcare_instance_profile_map[var.healthcare_units]
 
     primary_network_interface {
         subnet          = ibm_is_subnet.new_subnet.id
@@ -220,10 +224,10 @@ resource "ibm_is_instance" "control_plane_nodes" {
     name    = length(var.control_plane_names) > count.index ? var.control_plane_names[count.index] : "inference-control-plane-${format("%02d", count.index + 1)}-${random_string.suffix.result}"
     vpc     = ibm_is_vpc.new_vpc.id
     zone    = var.instance_zone
-    keys    = [data.ibm_is_ssh_key.ssh_key_id.id]
+    keys    = []
     image   = data.ibm_is_image.xeon_image[0].id
     resource_group = data.ibm_resource_group.target_rg.id
-    profile = local.instance_profile_map[var.healthcare_units]
+    profile = local.healthcare_instance_profile_map[var.healthcare_units]
 
     primary_network_interface {
         subnet          = ibm_is_subnet.new_subnet.id
@@ -237,7 +241,7 @@ resource "ibm_is_instance" "worker_gaudi_nodes" {
     name    = length(var.worker_gaudi_names) > count.index ? var.worker_gaudi_names[count.index] : "inference-workload-gaudi-node-${format("%02d", count.index + 1)}-${random_string.suffix.result}"
     vpc     = ibm_is_vpc.new_vpc.id
     zone    = var.instance_zone
-    keys    = [data.ibm_is_ssh_key.ssh_key_id.id]
+    keys    = []
     image   = data.ibm_is_image.gaudi_image[0].id
     resource_group = data.ibm_resource_group.target_rg.id
     profile = var.instance_profile  # Uses same profile as single-node
@@ -345,7 +349,7 @@ output "multi_node_config" {
 }
 
 data "template_file" "inference_config" {
-  template = file("${path.module}/inference-config.tpl")
+  template = file("/terraform/workspace/inference-config.tpl")
   vars = {
     cluster_url                         = var.cluster_url
     cert_file                           = var.cert_path

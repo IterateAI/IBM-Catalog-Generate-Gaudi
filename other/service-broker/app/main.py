@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Minimal Service Broker")
+app = FastAPI(title="Generate Enterprise Service Broker")
 
 # -------------------------------------------------------------------
 # GET /v2/catalog

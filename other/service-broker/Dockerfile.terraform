@@ -30,11 +30,12 @@ RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 
 # Copy application code
 COPY app/ /app/app/
+COPY terraform/ /terraform/base/
 
 # Create dummy SSH private key for internal use
-RUN mkdir -p /app/keys && \
-    printf "-----BEGIN PRIVATE KEY-----\nDUMMY-KEY-CONTENT-NOT-FOR-USE\n-----END PRIVATE KEY-----\n" > /app/keys/dummy_id_rsa && \
-    chmod 600 /app/keys/dummy_id_rsa
+# RUN mkdir -p /app/keys && \
+#     printf "-----BEGIN PRIVATE KEY-----\nDUMMY-KEY-CONTENT-NOT-FOR-USE\n-----END PRIVATE KEY-----\n" > /app/keys/id_rsa && \
+#     chmod 600 /app/keys/dummy_id_rsa
 
 # Set environment variables (runtime values will override these defaults)
 ENV PYTHONPATH=/app
@@ -45,4 +46,4 @@ ENV TF_LOG_PATH="/terraform/terraform.log"
 RUN printf '#!/bin/bash\nset -e\n\n# Initialize IBM Cloud CLI if API key is provided\nif [ ! -z "$IBMCLOUD_API_KEY" ]; then\n    echo "Logging into IBM Cloud..."\n    ibmcloud login --apikey "$IBMCLOUD_API_KEY" -r "$IBMCLOUD_REGION" --quiet || echo "IBM Cloud login failed, continuing..."\nfi\n\n# Execute the command passed to the container\nexec "$@"\n' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["celery", "-A", "app.tasks", "worker", "--loglevel=info", "--concurrency=1"]
+CMD ["celery", "-A", "app.celery", "worker", "--loglevel=info", "--concurrency=1"]
