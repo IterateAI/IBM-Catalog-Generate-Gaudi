@@ -13,6 +13,10 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Generate Enterprise Service Broker")
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
 # -------------------------------------------------------------------
 # GET /v2/catalog
 # -------------------------------------------------------------------
