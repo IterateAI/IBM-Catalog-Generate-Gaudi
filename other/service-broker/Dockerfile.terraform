@@ -29,7 +29,15 @@ COPY requirements.txt /app/
 RUN pip3 install --no-cache-dir --break-system-packages -r requirements.txt
 
 # Copy application code
-COPY app/ /app/app/
+COPY app/auth.py /app/app/auth.py
+COPY app/celery.py /app/app/celery.py
+COPY app/tasks.py /app/app/tasks.py
+COPY app/main.py /app/app/main.py
+COPY app/database.py /app/app/database.py
+COPY app/models.py /app/app/models.py
+COPY app/schemas.py /app/app/schemas.py
+COPY app/__init__.py /app/app/__init__.py
+
 COPY terraform/ /terraform/base/
 
 # Create dummy SSH private key for internal use

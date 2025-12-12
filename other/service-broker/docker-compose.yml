@@ -11,6 +11,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    restart: unless-stopped
 
   db:
     image: postgres:16
@@ -26,12 +27,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   redis:
     image: redis:8
     container_name: service-broker-redis
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data  # Persist Redis data
+    restart: unless-stopped
 
   # Celery worker with Terraform support
   celery:
@@ -44,9 +49,27 @@ services:
     environment:
       TERRAFORM_DIR: /terraform
     volumes:
-      - terraform_data:/terraform/workspace  # For state persistence
-      - ./keys/id_rsa:/app/keys/id_rsa # CHANGE THIS PATH AT DEPLOYMENT
-      # - ./terraform:/terraform/base:ro  # CHANGE THIS PATH AT DEPLOYMENT
+      - terraform_data:/terraform/workspace  # Persist Terraform state
+      - ./keys/id_rsa:/app/keys/id_rsa       # Change path as needed
+      # - ./terraform:/terraform/base:ro     # Optional, if using base Terraform files
+    depends_on:
+      - redis
+      - db
+    restart: unless-stopped
+
+  # Usage reporting service with separate Celery instance
+  usage-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.usage
+    container_name: usage_service
+    env_file: .env
+    # environment:
+    #   REDIS_URL: redis://redis:6379/1  # Different Redis DB for usage service
+    #   POSTGRES_HOST: db
+    #   POSTGRES_PORT: 5432
+    volumes:
+      - usage_data:/app/data  # Persist beat schedule
     depends_on:
       - redis
       - db
@@ -55,3 +78,5 @@ services:
 volumes:
   pgdata:
   terraform_data:
+  redis_data:
+  usage_data:

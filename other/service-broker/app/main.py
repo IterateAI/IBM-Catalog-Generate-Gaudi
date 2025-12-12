@@ -327,5 +327,52 @@ def deprovision(
     finally:
         db.close()
 
+# -------------------------------------------------------------------
+# DEBUG: GET /debug/instances
+# -------------------------------------------------------------------
+
+@app.get("/debug/instances")
+def list_instances(auth: bool = Depends(basic_auth)):
+    """Debug endpoint to list all service instances in database"""
+    db = SessionLocal()
+    try:
+        instances = db.query(ServiceInstance).all()
+        
+        result = []
+        for instance in instances:
+            result.append({
+                "instance_id": instance.instance_id,
+                "service_id": instance.service_id,
+                "plan_id": instance.plan_id,
+                "operation": instance.operation,
+                "state": instance.state,
+                "description": instance.description,
+                "celery_task_id": instance.celery_task_id,
+                "terraform_state_path": instance.terraform_state_path,
+                "email": instance.email,
+                "name": instance.name,
+                "org": instance.org,
+                "healthcare_units": instance.healthcare_units,
+                "ibm_region": instance.ibm_region,
+                "instance_zone": instance.instance_zone,
+                "cluster_url": instance.cluster_url,
+                "created_at": instance.created_at.isoformat() if instance.created_at else None,
+                "updated_at": instance.updated_at.isoformat() if instance.updated_at else None
+            })
+        
+        return {
+            "total_instances": len(result),
+            "instances": result
+        }
+        
+    except Exception as e:
+        logger.error(f"Error listing instances: {str(e)}")
+        return JSONResponse(
+            status_code=500,
+            content={"error": f"Failed to list instances: {str(e)}"}
+        )
+    finally:
+        db.close()
+
 # Bind and unbind endpoints removed as per requirements
 # This service broker does not support service binding

@@ -129,7 +129,7 @@ resource_group = "enterprise-inference-rg"
 
 ibmcloud_api_key = "{IBMCLOUD_API_KEY}"
 generate_enterprise_docker_user = "{DOCKER_USER}"
-generate_enterprise_docker_password = "{DOCKER_USER}"
+generate_enterprise_docker_password = "{DOCKER_PASS}"
 
 ibmcloud_region = "{ibm_region}"
 instance_zone = "{instance_zone}"
