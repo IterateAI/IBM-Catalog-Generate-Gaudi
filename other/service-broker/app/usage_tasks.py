@@ -141,10 +141,9 @@ def get_instance_usage(cluster_url: str, start_date: str, end_date: str) -> Dict
     # Use HTTP to avoid certificate issues
     if cluster_url.startswith("https://"):
         cluster_url = cluster_url.replace("https://", "http://")
-    elif not cluster_url.startswith("http://"):
+    elif not cluster_url.startswith("http://") and not cluster_url.startswith("https://"):
         cluster_url = f"http://{cluster_url}"
-    else:
-        cluster_url = f"http://{cluster_url}"
+    # If already starts with http://, leave it as is
     
     usage_url = f"{cluster_url.rstrip('/')}{USAGE_ENDPOINT_PATH}"
     headers = {"Content-Type": "application/json", "apikey": USAGE_API_KEY}
