@@ -1,14 +1,13 @@
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 
+
 class ProvisionRequest(BaseModel):
     # Required fields
     service_id: str
     plan_id: str
-    organization_guid: str
-    space_guid: str
-    
-    # Optional fields
+    organization_guid: Optional[str] = None 
+    space_guid: Optional[str] = None   
     context: Optional[Dict[str, Any]] = None
     parameters: Optional[Dict[str, Any]] = None
 
@@ -18,10 +17,11 @@ class PreviousValues(BaseModel):
     organization_id: Optional[str] = None
     space_id: Optional[str] = None
 
+
 class UpdateRequest(BaseModel):
     # Required fields
     service_id: str
-    
+
     # Optional fields
     plan_id: Optional[str] = None
     parameters: Optional[Dict[str, Any]] = None
