@@ -5,6 +5,7 @@ from app.schemas import ProvisionRequest, UpdateRequest
 from app.database import SessionLocal, Base, engine
 from app.models import ServiceInstance
 from app.tasks import provision_instance_task, deprovision_instance_task
+from app.usage_tasks import collect_and_report_usage
 import logging
 
 logger = logging.getLogger(__name__)
@@ -408,6 +409,27 @@ def list_instances(auth: bool = Depends(basic_auth)):
         )
     finally:
         db.close()
+
+
+@app.post("/debug/trigger-usage-report")
+def trigger_usage_report(auth: bool = Depends(basic_auth)):
+    """Debug endpoint to manually trigger the monthly usage collection and reporting task"""
+    try:
+        task = collect_and_report_usage.delay()
+        logger.info(f"Manually triggered usage report task with ID: {task.id}")
+        
+        return {
+            "status": "triggered",
+            "message": "Usage collection and reporting task has been queued",
+            "task_id": task.id
+        }
+    
+    except Exception as e:
+        logger.error(f"Error triggering usage report: {str(e)}")
+        return JSONResponse(
+            status_code=500, 
+            content={"error": f"Failed to trigger usage report: {str(e)}"}
+        )
 
 
 # Bind and unbind endpoints removed as per requirements

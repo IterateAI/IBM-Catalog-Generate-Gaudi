@@ -161,6 +161,15 @@ def send_usage_to_ibm(
 
     url = f"{IBM_BASE_URL}/v4/metering/resources/{RESOURCE_ID}/usage"
 
+    # logger.info("=" * 80)
+    # logger.info("TESTING MODE: NOT sending to IBM API - printing what would be sent")
+    # logger.info(f"URL: {url}")
+    # logger.info(f"Headers: {headers}")
+    # logger.info(f"Body: {body}")
+    # logger.info("=" * 80)
+    
+    # return {"status": "accepted", "message": "Testing mode - API call skipped"}
+
     for attempt in range(1, RETRY_COUNT + 1):
         try:
             logger.info(
@@ -175,10 +184,10 @@ def send_usage_to_ibm(
             )
         except Exception as e:
             logger.warning(f"[Attempt {attempt}] IBM API exception: {e}")
-
+    
         if attempt < RETRY_COUNT:
             time.sleep(RETRY_DELAY)
-
+    
     raise Exception(
         f"Failed to send usage to IBM for instance {instance_id} after {RETRY_COUNT} attempts"
     )
@@ -262,7 +271,7 @@ def collect_and_report_usage(self):
         }
 
         logger.info(
-            f"Usage reporting completed: {len(successful_reports)} successful, {len(failed_reports)} failed"
+            f"Usage reporting completed: {successful_reports} successful, {failed_reports} failed"
         )
         return summary
 
