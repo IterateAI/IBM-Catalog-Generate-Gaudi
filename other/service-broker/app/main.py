@@ -238,11 +238,8 @@ def last_operation(
         if not instance:
             # If instance not found, assume it was successfully deleted
             return JSONResponse(
-                status_code=200,
-                content={
-                    "state": "succeeded",
-                    "description": "Operation completed successfully",
-                },
+                status_code=410,
+                content={},
             )
 
         # Return current state from database
